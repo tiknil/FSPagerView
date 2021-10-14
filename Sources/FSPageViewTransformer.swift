@@ -19,6 +19,7 @@ public enum FSPagerViewTransformerType: Int {
     case ferrisWheel
     case invertedFerrisWheel
     case cubic
+    case wheel
 }
 
 open class FSPagerViewTransformer: NSObject {
@@ -29,6 +30,8 @@ open class FSPagerViewTransformer: NSObject {
     @objc open var minimumScale: CGFloat = 0.65
     @objc open var minimumAlpha: CGFloat = 0.6
     
+    @objc open var useAlphaForWheelTransformer: Bool = false
+
     @objc
     public init(type: FSPagerViewTransformerType) {
         self.type = type
@@ -230,6 +233,18 @@ open class FSPagerViewTransformer: NSObject {
             default:
                 attributes.alpha = 0
                 attributes.zIndex = 0
+            }
+        case .wheel:
+            guard scrollDirection == .horizontal else {
+                // This type doesn't support vertical mode
+                return
+            }
+
+            let transform = CGAffineTransform(translationX: 0, y: -(1-abs(position))*16)
+            attributes.transform = transform
+            if useAlphaForWheelTransformer {
+                let alpha = (self.minimumAlpha + (1-abs(position))*(1-self.minimumAlpha))
+                attributes.alpha = alpha
             }
         }
     }
