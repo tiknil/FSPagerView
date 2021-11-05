@@ -605,7 +605,7 @@ open class FSPagerView: UIView,UICollectionViewDataSource,UICollectionViewDelega
         // Is there a better algorithm?
         let currentIndex = self.currentIndex
         let currentSection = self.centermostIndexPath.section
-        if abs(currentIndex-index) <= self.numberOfItems/2 {
+        if abs(currentIndex-index) <= self.numberOfItems/2 || !isInfinite {
             return IndexPath(item: index, section: currentSection)
         } else if (index-currentIndex >= 0) {
             return IndexPath(item: index, section: currentSection-1)
